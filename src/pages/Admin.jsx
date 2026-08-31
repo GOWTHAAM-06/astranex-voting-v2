@@ -374,7 +374,7 @@ export default function Admin() {
         .from('admin_config')
         .select('start_time, end_time')
         .limit(1)
-        .single()
+        .maybeSingle()
         .then(({ data, error }) => {
           if (!error && data) {
             if (data.start_time) {
@@ -411,15 +411,16 @@ export default function Admin() {
         .maybeSingle()
 
       if (fetchError) throw fetchError
-      if (!configRow) throw new Error('No admin_config row found. Please ensure the table is seeded.')
+
+      const payload = {
+        start_time: new Date(electionStart).toISOString(),
+        end_time: new Date(electionEnd).toISOString(),
+      }
+      if (configRow) payload.id = configRow.id
 
       const { error } = await supabase
         .from('admin_config')
-        .update({
-          start_time: new Date(electionStart).toISOString(),
-          end_time: new Date(electionEnd).toISOString(),
-        })
-        .eq('id', configRow.id)
+        .upsert(payload)
 
       if (error) throw error
       setWindowStatus('Election window updated successfully!')
@@ -449,12 +450,13 @@ export default function Admin() {
         .maybeSingle()
 
       if (fetchError) throw fetchError
-      if (!configRow) throw new Error('No admin_config row found.')
+
+      const payload = { start_time: startISO, end_time: endISO }
+      if (configRow) payload.id = configRow.id
 
       const { error } = await supabase
         .from('admin_config')
-        .update({ start_time: startISO, end_time: endISO })
-        .eq('id', configRow.id)
+        .upsert(payload)
 
       if (error) throw error
 
