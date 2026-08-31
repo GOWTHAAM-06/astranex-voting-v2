@@ -591,123 +591,177 @@ export default function Admin() {
         {/* ─── HEADER ─── */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/login')} className="w-10 h-10 rounded-xl bg-dark-700/50 border border-dark-500/30 flex items-center justify-center text-gray-400 hover:text-neon-teal transition-colors" title="Exit to Login">
+            <button
+              onClick={() => navigate('/login')}
+              className="w-10 h-10 rounded-xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 transition-all duration-200"
+              title="Exit to Login"
+            >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black uppercase italic tracking-widest text-white"><span className="neon-text-amber">HOD</span> CONTROL</h1>
-                <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-mono ${
-                  realtimeStatus === 'connected' ? 'bg-neon-emerald/10 text-neon-emerald border border-neon-emerald/30'
-                  : realtimeStatus === 'updating' ? 'bg-neon-amber/10 text-neon-amber border border-neon-amber/30'
+                <h1 className="text-2xl font-black uppercase italic tracking-widest bg-gradient-to-r from-amber-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                  HOD CONTROL
+                </h1>
+                <div className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono ${
+                  realtimeStatus === 'connected' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                  : realtimeStatus === 'updating' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
                   : 'bg-red-500/10 text-red-400 border border-red-500/30'
                 }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${realtimeStatus === 'connected' ? 'bg-neon-emerald animate-pulse' : realtimeStatus === 'updating' ? 'bg-neon-amber' : 'bg-red-400'}`} />
-                  LIVE
+                  {realtimeStatus === 'connected' && (
+                    <span className="absolute inline-flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                    </span>
+                  )}
+                  {realtimeStatus !== 'connected' && (
+                    <div className={`w-1.5 h-1.5 rounded-full ${realtimeStatus === 'updating' ? 'bg-amber-400' : 'bg-red-400'}`} />
+                  )}
+                  <span className="ml-3">LIVE</span>
                 </div>
               </div>
-              <p className="text-gray-500 font-mono text-xs">{APP_NAME} Election Monitoring | {ELECTION_YEAR}</p>
+              <p className="text-slate-500 font-mono text-xs mt-0.5">{APP_NAME} Election Monitoring | {ELECTION_YEAR}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
               <p className="text-white font-semibold text-sm">{adminConfig?.admin_name}</p>
-              <p className="text-neon-amber font-mono text-xs">CHIEF ELECTORAL OFFICER</p>
+              <p className="text-amber-400 font-mono text-xs tracking-wider">CHIEF ELECTORAL OFFICER</p>
             </div>
-            <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dark-500/50 text-gray-400 hover:text-neon-teal hover:border-neon-teal/30 transition-all duration-300 font-mono text-sm">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 border border-slate-700/60 bg-slate-800/40 hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-400 transition-all duration-200 rounded-xl px-4 py-2 text-xs font-semibold text-slate-400"
+            >
               <LogOut className="w-4 h-4" /><span className="hidden sm:inline">Exit</span>
             </button>
           </div>
         </div>
 
         {/* ─── BALLOT TICKER (STOCK MARKET STYLE) ─── */}
-        <div className="glass-card p-3 mb-6 overflow-hidden border-neon-teal/20 relative">
+        <div className="bg-slate-900/90 border-y border-cyan-500/20 py-2.5 mb-6 overflow-hidden backdrop-blur-md relative">
           {/* Left fade mask */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(17,24,39,0.9), transparent)' }} />
+          <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(2,6,23,0.95), transparent)' }} />
           {/* Right fade mask */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(17,24,39,0.9), transparent)' }} />
-          <div className="relative overflow-hidden whitespace-nowrap">
+          <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(2,6,23,0.95), transparent)' }} />
+          {/* LIVE label */}
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex items-center gap-1.5">
+            <span className="text-[9px] font-bold text-cyan-500 font-mono uppercase tracking-widest bg-cyan-500/10 border border-cyan-500/20 rounded px-1.5 py-0.5">LIVE</span>
+          </div>
+          <div className="relative overflow-hidden whitespace-nowrap pl-14">
             <div className="inline-block" style={{ animation: 'marquee 40s linear infinite' }}>
-              <span className="text-sm font-mono text-neon-teal tracking-wider">{tickerText}</span>
+              <span className="text-sm font-mono text-cyan-400 font-bold tracking-wider">{tickerText}</span>
             </div>
           </div>
         </div>
 
-        {/* ─── WELCOME BANNER ─── */}
-        <div className="glass-card p-6 mb-8 border-neon-amber/20 animate-slide-up">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon-amber/20 to-neon-amber/5 border border-neon-amber/30 flex items-center justify-center flex-shrink-0">
-              <Shield className="w-7 h-7 text-neon-amber" />
+        {/* ─── WELCOME HERO CARD ─── */}
+        <div className="bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-800/80 border border-slate-800 rounded-2xl p-6 shadow-2xl mb-8 relative overflow-hidden">
+          {/* Ambient glow */}
+          <div className="absolute -top-10 -left-10 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative flex items-center gap-5">
+            <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/5 border border-amber-500/30 p-3.5 rounded-2xl shadow-lg shadow-amber-500/10 flex-shrink-0">
+              <Shield className="w-8 h-8 text-amber-400" />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-bold italic tracking-wide text-white">Welcome <span className="text-neon-amber font-black">{adminConfig?.admin_name}</span></h2>
-              <p className="text-neon-amber/80 text-sm md:text-base italic font-light tracking-wide mt-0.5">Mr/Mrs young and dynamic chief electoral officer</p>
+              <h2 className="text-xl md:text-2xl font-bold tracking-wide text-white">
+                Welcome, <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent font-black">{adminConfig?.admin_name}</span>
+              </h2>
+              <p className="text-slate-400 text-sm mt-0.5 font-light tracking-wide">
+                Chief Electoral Officer &mdash; <span className="text-amber-400/70 italic">SRG Engineering College</span>
+              </p>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-dark-500/30 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-neon-emerald animate-pulse" />
-            <p className="text-xs text-gray-500 font-mono">Command session active · {new Date().toLocaleString()}</p>
+          <div className="relative mt-5 pt-4 border-t border-slate-800/80 flex items-center gap-3">
+            <span className="bg-slate-800/80 border border-slate-700/50 text-slate-300 font-mono text-xs rounded-full px-3 py-1 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+              Command session active
+            </span>
+            <span className="bg-slate-800/80 border border-slate-700/50 text-slate-400 font-mono text-xs rounded-full px-3 py-1">
+              {new Date().toLocaleString()}
+            </span>
           </div>
         </div>
 
         {/* ─── ELECTION TIME CONTROLLER ─── */}
-        <div className="glass-card p-6 mb-8 border-neon-teal/20">
-          <h3 className="text-lg font-bold uppercase italic tracking-wider text-white mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-neon-teal" /> Election Time Controller
+        <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 mb-8 shadow-xl">
+          <h3 className="text-base font-bold uppercase italic tracking-wider text-slate-200 mb-5 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+              <Clock className="w-4 h-4 text-cyan-400" />
+            </div>
+            Election Time Controller
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left: datetime inputs */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left: datetime inputs + update button */}
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider font-mono">Start Time</label>
-                <input type="datetime-local" value={electionStart} onChange={(e) => setElectionStart(e.target.value)}
-                  className="input-neon text-sm" />
+                <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider font-mono">Start Time</label>
+                <input
+                  type="datetime-local"
+                  value={electionStart}
+                  onChange={(e) => setElectionStart(e.target.value)}
+                  className="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500/80 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 text-slate-100 rounded-xl p-3 shadow-inner text-sm font-mono transition-colors duration-200"
+                />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider font-mono">End Time</label>
-                <input type="datetime-local" value={electionEnd} onChange={(e) => setElectionEnd(e.target.value)}
-                  className="input-neon text-sm" />
+                <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider font-mono">End Time</label>
+                <input
+                  type="datetime-local"
+                  value={electionEnd}
+                  onChange={(e) => setElectionEnd(e.target.value)}
+                  className="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500/80 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 text-slate-100 rounded-xl p-3 shadow-inner text-sm font-mono transition-colors duration-200"
+                />
               </div>
-              <button onClick={handleUpdateWindow} disabled={updatingWindow}
-                className="btn-neon w-full flex items-center justify-center gap-2 disabled:opacity-50">
+              <button
+                onClick={handleUpdateWindow}
+                disabled={updatingWindow}
+                className="w-full flex items-center justify-center gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 shadow-lg shadow-cyan-500/10 transition-all duration-200 rounded-xl py-3.5 font-semibold text-sm disabled:opacity-50"
+              >
                 {updatingWindow ? <Loader2 className="w-4 h-4 animate-spin" /> : <Timer className="w-4 h-4" />}
                 {updatingWindow ? 'Updating...' : 'Update Election Window'}
               </button>
               {windowStatus && (
-                <div className={`p-3 rounded-lg text-sm ${windowStatus.includes('successfully') || windowStatus.includes('LIVE') ? 'bg-neon-emerald/10 border border-neon-emerald/30 text-neon-emerald' : 'bg-red-500/10 border border-red-500/30 text-red-400'}`}>
+                <div className={`p-3 rounded-xl text-sm font-mono ${
+                  windowStatus.includes('successfully') || windowStatus.includes('LIVE')
+                    ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                    : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                }`}>
                   {windowStatus}
                 </div>
               )}
             </div>
             {/* Right: quick actions + status */}
             <div className="space-y-4">
-              <p className="text-sm text-gray-400 font-mono">Quick Actions</p>
-              <button onClick={handleInstantLive} disabled={updatingWindow}
-                className="btn-neon-emerald w-full flex items-center justify-center gap-2 disabled:opacity-50 text-base py-4">
+              <p className="text-xs text-slate-500 font-mono uppercase tracking-wider">Quick Actions</p>
+              <button
+                onClick={handleInstantLive}
+                disabled={updatingWindow}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white shadow-xl shadow-emerald-500/20 transition-all duration-200 rounded-xl py-3.5 font-bold tracking-wide text-sm disabled:opacity-50"
+              >
                 <Zap className="w-5 h-5" />
                 Start Election Now (2-Hour Window)
               </button>
-              <div className="glass-card p-4 bg-dark-700/30">
-                <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-2">Current Election Status</p>
+              <div className="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 shadow-inner">
+                <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-3">Current Election Status</p>
                 {electionStart && electionEnd ? (
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-gray-400">Start:</span>
-                      <span className="text-white font-mono">{new Date(electionStart).toLocaleString()}</span>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500 text-xs font-mono">Start</span>
+                      <span className="text-slate-200 font-mono text-xs">{new Date(electionStart).toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-gray-400">End:</span>
-                      <span className="text-white font-mono">{new Date(electionEnd).toLocaleString()}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500 text-xs font-mono">End</span>
+                      <span className="text-slate-200 font-mono text-xs">{new Date(electionEnd).toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-xs mt-2">
-                      <span className="text-gray-400">Duration:</span>
-                      <span className="text-neon-teal font-mono">
+                    <div className="flex justify-between items-center pt-2 border-t border-slate-800/60">
+                      <span className="text-slate-500 text-xs font-mono">Duration</span>
+                      <span className="text-cyan-400 font-mono text-xs font-bold">
                         {Math.round((new Date(electionEnd) - new Date(electionStart)) / (1000 * 60 * 60) * 10) / 10}h
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-500 italic">Not configured</p>
+                  <p className="text-xs text-slate-600 italic">Not configured</p>
                 )}
               </div>
             </div>
