@@ -74,10 +74,12 @@ function AreaTooltip({ active, payload, label }) {
 
 function PieTooltip({ active, payload }) {
   if (active && payload && payload.length) {
+    const val = payload[0].value
+    const label = val === 1 ? 'student' : 'students'
     return (
-      <div className="glass-card p-4 border border-neon-teal/30">
-        <p className="text-white font-semibold">{payload[0].name}</p>
-        <p className="text-neon-teal font-mono text-lg font-bold">{payload[0].value} students</p>
+      <div className="glass-card p-4 border border-neon-teal/30 relative z-50 shadow-2xl backdrop-blur-md">
+        <p className="text-white font-semibold truncate max-w-[220px]" title={payload[0].name}>{payload[0].name}</p>
+        <p className="text-neon-teal font-mono text-lg font-bold">{val} {label}</p>
         <p className="text-gray-400 text-xs">{((payload[0].payload.percent || 0) * 100).toFixed(1)}%</p>
       </div>
     )
@@ -86,12 +88,12 @@ function PieTooltip({ active, payload }) {
 }
 
 function renderActiveShape(props) {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, percent, value } = props
+  const label = value === 1 ? 'Vote' : 'Votes'
   return (
     <g>
-      <text x={cx} y={cy - 10} textAnchor="middle" fill="#fff" className="text-xl font-bold">{payload.name}</text>
-      <text x={cx} y={cy + 15} textAnchor="middle" fill="#00F0FF" className="text-lg font-mono font-bold">{value} students</text>
-      <text x={cx} y={cy + 35} textAnchor="middle" fill="#9CA3AF" className="text-xs font-mono">{`${(percent * 100).toFixed(1)}%`}</text>
+      <text x={cx} y={cy - 5} textAnchor="middle" fill="#00F0FF" className="text-2xl font-mono font-bold">{value}</text>
+      <text x={cx} y={cy + 20} textAnchor="middle" fill="#9CA3AF" className="text-xs font-mono uppercase tracking-wider">{label}</text>
       <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 6} startAngle={startAngle} endAngle={endAngle} fill={fill} opacity={0.6} />
       <Sector cx={cx} cy={cy} innerRadius={innerRadius - 2} outerRadius={outerRadius + 2} startAngle={startAngle} endAngle={endAngle} fill={fill} />
     </g>
