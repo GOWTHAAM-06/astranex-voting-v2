@@ -13,7 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, Cell, PieChart as RePieChart, Pie, 
   RadialBarChart, RadialBar, Legend, Sector,
-  AreaChart, Area, Rectangle
+  AreaChart, Area
 } from 'recharts'
 import { useNavigate } from 'react-router-dom'
 
@@ -54,6 +54,39 @@ function CustomTooltip({ active, payload, label }) {
       <div className="backdrop-blur-xl bg-slate-900/90 border border-slate-700/50 shadow-2xl rounded-xl p-3">
         <p className="text-slate-200 font-semibold mb-1">{label}</p>
         <p className="text-cyan-400 font-mono text-lg font-bold">{payload[0].value} votes</p>
+      </div>
+    )
+  }
+  return null
+}
+
+const ALL_YEARS = ['1st Year', '2nd Year', '3rd Year', '4th Year']
+
+function YearStackTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    const total = ALL_YEARS.reduce((sum, yr) => {
+      const entry = payload.find(p => p.dataKey === yr)
+      return sum + (entry?.value || 0)
+    }, 0)
+    return (
+      <div className="backdrop-blur-xl bg-slate-900/90 border border-slate-700/50 shadow-2xl rounded-xl p-3 min-w-[180px]">
+        <p className="text-slate-200 font-semibold mb-2 border-b border-slate-700/50 pb-1">{label}</p>
+        {ALL_YEARS.map(yr => {
+          const entry = payload.find(p => p.dataKey === yr)
+          const val = entry?.value || 0
+          return (
+            <div key={yr} className="flex items-center justify-between gap-4 py-0.5">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: entry?.fill || '#6b7280' }} />
+                <span className="text-slate-400 text-xs font-mono">{yr}</span>
+              </span>
+              <span className="text-slate-200 font-mono text-xs font-bold">{val}</span>
+            </div>
+          )
+        })}
+        <p className="text-cyan-400 font-mono text-sm font-bold mt-2 border-t border-slate-700/50 pt-1">
+          Total: {total} vote{total !== 1 ? 's' : ''}
+        </p>
       </div>
     )
   }
@@ -331,9 +364,8 @@ export default function Admin() {
       setDepartmentData(deptArr)
 
       // Year stacked
-      const allYears = ['1st Year', '2nd Year', '3rd Year', '4th Year']
       const stackArr = Object.values(yearCandidateVotes)
-      stackArr.forEach(item => { allYears.forEach(y => { if (!item[y]) item[y] = 0 }) })
+      stackArr.forEach(item => { ALL_YEARS.forEach(y => { if (!item[y]) item[y] = 0 }) })
       setYearStackData(stackArr)
 
       // Timeline sorted
@@ -801,10 +833,9 @@ export default function Admin() {
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
                     <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} />
                     <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} allowDecimals={false} />
-                    <Tooltip content={<CustomTooltip />} cursor={<Rectangle fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)" />} />
-                    <Legend wrapperStyle={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }} formatter={(v) => <span style={{ color: '#94a3b8' }}>{v}</span>} />
+                    <Tooltip content={<YearStackTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
                     {Object.entries(YEAR_COLORS).map(([year, color]) => (
-                      <Bar key={year} dataKey={year} stackId="a" fill={color} radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)" />} />
+                      <Bar key={year} dataKey={year} stackId="a" fill={color} radius={[4, 4, 0, 0]} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
