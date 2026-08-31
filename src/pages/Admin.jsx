@@ -13,7 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, Cell, PieChart as RePieChart, Pie, 
   RadialBarChart, RadialBar, Legend, Sector,
-  AreaChart, Area
+  AreaChart, Area, Rectangle
 } from 'recharts'
 import { useNavigate } from 'react-router-dom'
 
@@ -51,9 +51,9 @@ function StatCard({ icon: Icon, label, value, sublabel, color, glowColor }) {
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-card p-4 border border-neon-teal/30">
-        <p className="text-white font-semibold">{label}</p>
-        <p className="text-neon-teal font-mono text-lg font-bold">{payload[0].value} votes</p>
+      <div className="backdrop-blur-xl bg-slate-900/90 border border-slate-700/50 shadow-2xl rounded-xl p-3">
+        <p className="text-slate-200 font-semibold mb-1">{label}</p>
+        <p className="text-cyan-400 font-mono text-lg font-bold">{payload[0].value} votes</p>
       </div>
     )
   }
@@ -63,9 +63,9 @@ function CustomTooltip({ active, payload, label }) {
 function AreaTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-card p-4 border border-neon-amber/30">
-        <p className="text-gray-400 text-xs font-mono">{label}</p>
-        <p className="text-neon-amber font-mono text-lg font-bold">{payload[0].value} votes</p>
+      <div className="backdrop-blur-xl bg-slate-900/90 border border-slate-700/50 shadow-2xl rounded-xl p-3">
+        <p className="text-slate-400 text-xs font-mono mb-1">{label}</p>
+        <p className="text-cyan-400 font-mono text-lg font-bold">{payload[0].value} votes</p>
       </div>
     )
   }
@@ -77,10 +77,10 @@ function PieTooltip({ active, payload }) {
     const val = payload[0].value
     const label = val === 1 ? 'student' : 'students'
     return (
-      <div className="glass-card p-4 border border-neon-teal/30 relative z-50 shadow-2xl backdrop-blur-md">
-        <p className="text-white font-semibold truncate max-w-[220px]" title={payload[0].name}>{payload[0].name}</p>
-        <p className="text-neon-teal font-mono text-lg font-bold">{val} {label}</p>
-        <p className="text-gray-400 text-xs">{((payload[0].payload.percent || 0) * 100).toFixed(1)}%</p>
+      <div className="backdrop-blur-xl bg-slate-900/90 border border-slate-700/50 shadow-2xl rounded-xl p-3 relative z-50">
+        <p className="text-slate-200 font-semibold truncate max-w-[220px] mb-1" title={payload[0].name}>{payload[0].name}</p>
+        <p className="text-emerald-400 font-mono text-lg font-bold">{val} {label}</p>
+        <p className="text-slate-400 text-xs">{((payload[0].payload.percent || 0) * 100).toFixed(1)}%</p>
       </div>
     )
   }
@@ -693,45 +693,47 @@ export default function Admin() {
         {/* ─── ROW 1: TURNOUT GAUGE + DEPT PIE ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Overall Turnout — Radial */}
-          <div className="glass-card p-6">
+          <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 shadow-xl hover:border-slate-700/60 transition-all duration-300">
             <h3 className="text-lg font-bold uppercase italic tracking-wider text-white mb-4 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-neon-teal" /> Overall Turnout
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <Activity className="w-5 h-5 text-cyan-400" /> Overall Turnout
             </h3>
             <div className="h-[300px] relative">
               <svg style={{ height: 0, width: 0 }}>
                 <defs><linearGradient id="turnoutGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={GRADIENT_CYAN} /><stop offset="100%" stopColor={GRADIENT_EMERALD} />
+                  <stop offset="0%" stopColor="#06b6d4" /><stop offset="100%" stopColor="#10b981" />
                 </linearGradient></defs>
               </svg>
               <ResponsiveContainer width="100%" height="100%">
                 <RadialBarChart cx="50%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={16} data={radialData} startAngle={180} endAngle={0}>
-                  <RadialBar dataKey="value" cornerRadius={8} background={{ fill: '#1A2332' }} />
-                  <Legend wrapperStyle={{ fontSize: '12px', color: '#9CA3AF' }} />
+                  <RadialBar dataKey="value" cornerRadius={8} background={{ fill: 'rgba(255, 255, 255, 0.03)' }} />
+                  <Legend wrapperStyle={{ fontSize: '12px', color: '#94a3b8' }} />
                 </RadialBarChart>
               </ResponsiveContainer>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
                 <p className="text-5xl font-black text-white font-mono">{turnout}%</p>
-                <p className="text-neon-teal text-xs font-mono uppercase tracking-wider mt-1">Turnout</p>
+                <p className="text-cyan-400 text-xs font-mono uppercase tracking-wider mt-1">Turnout</p>
               </div>
             </div>
-            <div className="flex justify-between text-xs text-gray-500 font-mono mt-2">
+            <div className="flex justify-between text-xs text-slate-400 font-mono mt-2">
               <span>{votedStudents} voted</span><span>{totalStudents - votedStudents} pending</span>
             </div>
           </div>
 
           {/* Department Pie — unique students */}
-          <div className="glass-card p-6">
+          <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 shadow-xl hover:border-slate-700/60 transition-all duration-300">
             <h3 className="text-lg font-bold uppercase italic tracking-wider text-white mb-4 flex items-center gap-2">
-              <PieChart className="w-5 h-5 text-neon-emerald" /> Department-wise Breakdown
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <PieChart className="w-5 h-5 text-emerald-400" /> Department-wise Breakdown
             </h3>
             <div className="h-[300px]">
               {noVotesYet ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                  <div className="w-16 h-16 rounded-full bg-neon-amber/10 border border-neon-amber/20 flex items-center justify-center mb-4">
-                    <Activity className="w-8 h-8 text-neon-amber animate-pulse-neon" />
+                <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+                    <Activity className="w-8 h-8 text-amber-500 animate-pulse" />
                   </div>
-                  <p className="text-sm text-neon-amber font-mono uppercase tracking-wider">System Live</p>
-                  <p className="text-gray-500 text-xs mt-1 italic">Awaiting First Ballot</p>
+                  <p className="text-sm text-amber-500 font-mono uppercase tracking-wider">System Live</p>
+                  <p className="text-slate-500 text-xs mt-1 italic">Awaiting First Ballot</p>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
@@ -739,7 +741,7 @@ export default function Admin() {
                     <Pie data={deptPieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100}
                       dataKey="value" nameKey="name" activeIndex={activeIndex}
                       activeShape={renderActiveShape} onMouseEnter={onPieEnter} paddingAngle={3}>
-                      {deptPieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
+                      {deptPieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} stroke="rgba(255,255,255,0.05)" />)}
                     </Pie>
                     <Tooltip content={<PieTooltip />} />
                   </RePieChart>
@@ -750,9 +752,10 @@ export default function Admin() {
         </div>
 
         {/* ─── ROW 2: VOTING VELOCITY (AREA CHART) ─── */}
-        <div className="glass-card p-6 mb-8">
+        <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 shadow-xl hover:border-slate-700/60 transition-all duration-300 mb-8">
           <h3 className="text-lg font-bold uppercase italic tracking-wider text-white mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-neon-amber" /> Voting Velocity — Volume by Hour
+            <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <Zap className="w-5 h-5 text-cyan-400" /> Voting Velocity — Volume by Hour
           </h3>
           <div className="h-[250px]">
             {timelineData.length > 0 ? (
@@ -760,24 +763,24 @@ export default function Admin() {
                 <AreaChart data={timelineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="velocityGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#FFB800" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#FFB800" stopOpacity={0} />
+                      <stop offset="0%" stopColor="rgba(6, 182, 212, 0.4)" />
+                      <stop offset="100%" stopColor="rgba(6, 182, 212, 0)" />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#243044" vertical={false} />
-                  <XAxis dataKey="hour" stroke="#6B7280" tick={{ fill: '#9CA3AF', fontSize: 11 }} />
-                  <YAxis stroke="#6B7280" tick={{ fill: '#9CA3AF', fontSize: 11 }} allowDecimals={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
+                  <XAxis dataKey="hour" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} />
+                  <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} allowDecimals={false} />
                   <Tooltip content={<AreaTooltip />} />
-                  <Area type="monotone" dataKey="votes" stroke="#FFB800" strokeWidth={2} fill="url(#velocityGradient)" dot={{ fill: '#FFB800', stroke: '#FFB800', strokeWidth: 2, r: 3 }} activeDot={{ r: 6, fill: '#FFB800' }} />
+                  <Area type="monotone" dataKey="votes" stroke="#06b6d4" strokeWidth={2} fill="url(#velocityGradient)" dot={{ r: 4, strokeWidth: 2, fill: '#0f172a' }} activeDot={{ r: 7, strokeWidth: 3, className: 'animate-pulse' }} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                <div className="w-16 h-16 rounded-full bg-neon-amber/10 border border-neon-amber/20 flex items-center justify-center mb-4">
-                  <Activity className="w-8 h-8 text-neon-amber animate-pulse-neon" />
+              <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+                  <Activity className="w-8 h-8 text-amber-500 animate-pulse" />
                 </div>
-                <p className="text-sm text-neon-amber font-mono uppercase tracking-wider">System Live</p>
-                <p className="text-gray-500 text-xs mt-1 italic">Awaiting First Ballot</p>
+                <p className="text-sm text-amber-500 font-mono uppercase tracking-wider">System Live</p>
+                <p className="text-slate-500 text-xs mt-1 italic">Awaiting First Ballot</p>
               </div>
             )}
           </div>
@@ -786,31 +789,32 @@ export default function Admin() {
         {/* ─── ROW 3: YEAR MATRIX + MARGIN GAUGES ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Year-Wise Popularity Stack */}
-          <div className="glass-card p-6 lg:col-span-1">
+          <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 shadow-xl hover:border-slate-700/60 transition-all duration-300 lg:col-span-1">
             <h3 className="text-lg font-bold uppercase italic tracking-wider text-white mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-neon-teal" /> Year-Wise Popularity
+              <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+              <BarChart3 className="w-5 h-5 text-purple-500" /> Year-Wise Popularity
             </h3>
             <div className="h-[250px]">
               {yearStackData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={yearStackData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#243044" vertical={false} />
-                    <XAxis dataKey="name" stroke="#6B7280" tick={{ fill: '#9CA3AF', fontSize: 10 }} />
-                    <YAxis stroke="#6B7280" tick={{ fill: '#9CA3AF', fontSize: 10 }} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: '#111827', border: '1px solid #00F0FF40', borderRadius: '12px' }} labelStyle={{ color: '#fff' }} />
-                    <Legend wrapperStyle={{ fontSize: '10px', color: '#9CA3AF' }} formatter={(v) => <span style={{ color: '#9CA3AF' }}>{v}</span>} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} />
+                    <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} allowDecimals={false} />
+                    <Tooltip content={<CustomTooltip />} cursor={<Rectangle fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)" />} />
+                    <Legend wrapperStyle={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }} formatter={(v) => <span style={{ color: '#94a3b8' }}>{v}</span>} />
                     {Object.entries(YEAR_COLORS).map(([year, color]) => (
-                      <Bar key={year} dataKey={year} stackId="a" fill={color} radius={[4, 4, 0, 0]} />
+                      <Bar key={year} dataKey={year} stackId="a" fill={color} radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)" />} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                  <div className="w-16 h-16 rounded-full bg-neon-amber/10 border border-neon-amber/20 flex items-center justify-center mb-4">
-                    <Activity className="w-8 h-8 text-neon-amber animate-pulse-neon" />
+                <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+                    <Activity className="w-8 h-8 text-amber-500 animate-pulse" />
                   </div>
-                  <p className="text-sm text-neon-amber font-mono uppercase tracking-wider">System Live</p>
-                  <p className="text-gray-500 text-xs mt-1 italic">Awaiting First Ballot</p>
+                  <p className="text-sm text-amber-500 font-mono uppercase tracking-wider">System Live</p>
+                  <p className="text-slate-500 text-xs mt-1 italic">Awaiting First Ballot</p>
                 </div>
               )}
             </div>
